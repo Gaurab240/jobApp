@@ -8,12 +8,12 @@ import activityModel from "../models/activityModel.js";
 
 export const createActivity = async (req, res) => {
   const { activityId, message, comment, like } = req.body;
- 
+  const userId = req.userId;
   try {
-    const activityData = { activityId, message, comment, like };
+    const activityData = { activityId, message, comment, like, userId };
     await activityModel.createActivity(activityData, (err, result) => {
       if (err) {
-        res.status(400).json("Cannot create activity");
+        res.status(400).json({ error: "Failed to create activity", details: err.message });
         console.log(err);
       } else {
         res.status(200).json(result);
@@ -23,49 +23,3 @@ export const createActivity = async (req, res) => {
     console.log(error);
   }
 };
-
-// export const Login = async (req, res) => {
-//   const { like, comment } = req.body;
-
-//   try {
-//     // const user = await userModel.findOne(like);
-
-//     // if (!user) {
-//     //   return res.status(401).json("User is not found");
-//     // }
-
-//     userModel.findOne(like, (error, user) => {
-//       if (error) {
-//         console.error(error);
-//         return res.status(500).json("Internal server error");
-//       }
-
-//       if (!user) {
-//         return res.status(401).json({error:"User is not found"});
-//       }
-
-//       const isMatch = bcrypt.compareSync(comment, user.comment);
-
-//       if (isMatch) {
-//         const token = createToken(user.id);
-//         const responseData = {
-//           message: "Login successful",
-//           user: {
-//             id: user.id,
-//             name: user.message,
-//             like: user.like,
-//             // Include any other relevant user details
-//           },
-//           token: token,
-//         };
-
-//         return res.status(200).json(responseData);
-//       } else {
-//         return res.status(401).json("Invalid like or comment");
-//       }
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json("Internal server error");
-//   }
-// };
